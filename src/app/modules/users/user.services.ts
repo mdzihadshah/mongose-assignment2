@@ -1,5 +1,5 @@
 import { User } from './user.model';
-import { IUser } from './user.interface';
+import { IOrder, IUser } from './user.interface';
 
 const createUserIntoDB = async (user: IUser) => {
   const result = await User.create(user);
@@ -33,6 +33,26 @@ const deleteUser = async (userId: number) => {
   const result = await User.findOneAndDelete({ userId });
   return result;
 };
+// save order
+const createOrder = async (userId: number, orderData: IOrder) => {
+  const result = await User.findOneAndUpdate(
+    { userId },
+    {
+      $push: {
+        orders: orderData,
+      },
+    },
+  );
+  return result;
+};
+//get all user data
+const getAllUserOrders = async (userId: number) => {
+  const result = await User.findOne(
+    { userId },
+    { 'orders.productName': 1, 'orders.price': 1, 'orders.quantity':1 },
+  );
+  return result;
+};
 
 export const userServices = {
   createUserIntoDB,
@@ -40,4 +60,6 @@ export const userServices = {
   getSingleUser,
   userUpdate,
   deleteUser,
+  createOrder,
+  getAllUserOrders,
 };
