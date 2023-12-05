@@ -5,6 +5,17 @@ const createUserIntoDB = async (user: IUser) => {
   const result = await User.create(user);
   return result;
 };
-export const createUserServices = {
+const getAllUsers = async () => {
+  const result = await User.find().select({
+    userName: 1,
+    fullName: 1,
+    age: 1,
+    email: 1,
+    address: 1,
+  });
+  return result;
+};
+export const userServices = {
   createUserIntoDB,
+  getAllUsers,
 };
