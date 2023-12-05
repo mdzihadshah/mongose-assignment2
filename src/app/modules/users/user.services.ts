@@ -49,11 +49,42 @@ const createOrder = async (userId: number, orderData: IOrder) => {
 const getAllUserOrders = async (userId: number) => {
   const result = await User.findOne(
     { userId },
-    { 'orders.productName': 1, 'orders.price': 1, 'orders.quantity':1 },
+    { 'orders.productName': 1, 'orders.price': 1, 'orders.quantity': 1 },
   );
   return result;
 };
+// fet total spaciphic user price
+const getTotalOrderPrice = async (userId: number) => {
+  const result = await User.aggregate([
+    // step-1
+    {
+      $match: {
+        userId: userId,
+      },
+    },
+    // step-2
+    { $unwind: '$orders' },
+    // step-3
+    {
+      $group: {
+        _id: null,
+        totalPrice: {
+          $sum: { $multiply: ['$orders.price', '$orders.quantity'] },
+        },
+      },
+    },
+    // step-4
+    {
+      $project: {
+        _id: 0,
+        totalPrice: { $round: ['$totalPrice', 2] },
+      },
+    },
+  ]);
 
+  if (result.length > 0) return result[0];
+  else return (result[0] = { totalPrice: 0 });
+};
 export const userServices = {
   createUserIntoDB,
   getAllUsers,
@@ -62,4 +93,5 @@ export const userServices = {
   deleteUser,
   createOrder,
   getAllUserOrders,
+  getTotalOrderPrice,
 };
