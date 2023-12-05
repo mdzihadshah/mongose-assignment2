@@ -1,3 +1,7 @@
+## Live Server link
+
+https://mogose-assignment-2-mdzihadshah.vercel.app/
+
 ## Run Locally
 
 download/clone my project
