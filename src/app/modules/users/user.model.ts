@@ -33,4 +33,11 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// hide password
+userSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    delete ret.password;
+  },
+});
+
 export const User = model<IUser>('User', userSchema);
